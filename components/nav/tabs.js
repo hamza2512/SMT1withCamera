@@ -4,6 +4,7 @@ import {
      Text,
      Image,
     StyleSheet,
+    Pressable,
 } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 
@@ -15,28 +16,26 @@ import Camera from "../../screens/camera";
 import Stats from "../../screens/stats";
 
 
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { NavigationContainer } from "@react-navigation/native";
-
 
 
 const Tab = createBottomTabNavigator()
 
-const onPress=({navigation})=>{ navigation.navigate('Camera') }
+
     
 
 
-const TabBarCustomButton=() =>{
+const TabBarCustomButton=({children , onPress}) =>{
     return(
-        <TouchableOpacity 
+        <Pressable 
         style={{
-            top: -30,
+            top: -50,
             justifyContent:'center',
             alignItems:'center',
             ...styles.shadow
         }}
-         onPress={onPress}
-        >
+        onPress={onPress}
+    
+       >
         <LinearGradient
         colors={["#4E4DEB","#1B1D2C"]}
         style={{
@@ -45,10 +44,10 @@ const TabBarCustomButton=() =>{
             borderRadius:35,
         }}
         >
-          {/* {children}  */}
+          {children}  
         </LinearGradient>
 
-        </TouchableOpacity>
+        </Pressable>
     )
 }
 const Tabs = () => {
@@ -56,7 +55,6 @@ const Tabs = () => {
         <Tab.Navigator
         screenOptions = {{
             tabBarShowLabel: false,
-                 
                 tabBarStyle :{
                   alignItems:'center',
                   justifyContent:'center',
@@ -68,9 +66,10 @@ const Tabs = () => {
                   elevation : 0,
                   borderTopColor : "transparent",
                   height :100,
+                  
                 }
            }}
-    
+             
         >
          
               <Tab.Screen
@@ -80,25 +79,27 @@ const Tabs = () => {
                      headerShown:false,
                      tabBarIcon :({focused})=>(
                          <View style={{alignItems:'center',
-                          justifyContent:'center'}}>
+                          justifyContent:'center' }}>
                           <Image  
-                              source={'./../../assets/icons/home.png'}
+                              source={require('../../assets/icons/home.png')}
                               resizeMode="contain"
                               style={{
                                   height :20,
                                   width :20,    
                                      tintColor :focused? "#4E4DEB"
-                                     :'black'
-                              }}
-
+                                     :'white'
+                              }} 
                           />
-                          <Text style={{color : focused ? "#4E4DEB" : 'black', 
-                          
-                         }}>
+
+                            
+                              <Text style={{color : focused ? "#4E4DEB" : 'black', 
+                         
+                        }}>
                              HOME
                           </Text>
 
                          </View>
+
                      )
                 }}
             />  
@@ -110,20 +111,20 @@ const Tabs = () => {
                          <View style={{alignItems:'center',
                           justifyContent:'center'}}>
                           <Image  
-                              source={'./../../assets/icons/pie_chart.png'}
+                              source={require('./../../assets/portfolio.png')}
                               resizeMode="contain"
                               style={{
-                                  height :20,
-                                  width :20,    
+                                  height :25,
+                                  width :25,    
                                      tintColor :focused? "#4E4DEB"
-                                     :'white'
+                                     :'black'
                               }}
 
                           />
                           <Text style={{color : focused ? "#4E4DEB" : 'black', 
                          
                          }}>
-                             Portfolio
+                             PORTFOLIO
                           </Text>
 
                          </View>
@@ -131,28 +132,29 @@ const Tabs = () => {
                 }}
             />
             <Tab.Screen
-                name="Camera"
+                name="Cameraa"
                 component={Camera}
                 options={{
+                    headerShown:false,
+                
                      tabBarIcon :({focused})=>(
-                         <View style={{alignItems:'center',
-                          justifyContent:'center'}}>
-                          <Image  
-                              source={'../../assets/icons/settings.png'}
+                             <Image  
+                              source={require('./../../assets/icons/settings.png')}
                               resizeMode="contain"
                               style={{
                                   height :30,
                                   width :30,    
-                                     tintColor :'white'
+                                     tintColor :'black'
                               }}
 
-                          />
-                        
-                         </View>
+                              />
                      ),
-                     tabBarButton : () =>(
-                         <TabBarCustomButton  />
-                         
+                     tabBarButton : (props) =>(
+                         <TabBarCustomButton {...props} />
+                     
+                     
+              
+                                  
                      )
                 }}
             />
@@ -164,7 +166,7 @@ const Tabs = () => {
                          <View style={{alignItems:'center',
                           justifyContent:'center'}}>
                           <Image  
-                              source={'../../assets/icons/line_graph.png'}
+                              source={require('../../assets/icons/line_graph.png')}
                               resizeMode="contain"
                               style={{
                                   height :20,
@@ -192,7 +194,7 @@ const Tabs = () => {
                          <View style={{alignItems:'center',
                           justifyContent:'center'}}>
                           <Image  
-                              source={'../../assets/icons/settings.png'}
+                              source={require('./../../assets/prescription.png')}
                               resizeMode="contain"
                               style={{
                                   height :20,
@@ -211,6 +213,8 @@ const Tabs = () => {
                          </View>
                      )
                 }}
+
+               
             />
         </Tab.Navigator>
     )

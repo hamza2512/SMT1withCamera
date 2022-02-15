@@ -5,7 +5,6 @@ import { NavigationContainer, StackActions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import login from './screens/login';
 import Register from './screens/register';
-import Home from './screens/home';
 import Tabs from './components/nav/tabs';
 
 

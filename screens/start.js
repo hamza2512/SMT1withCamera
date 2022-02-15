@@ -20,7 +20,7 @@ export default function Start({navigation}) {
         animation="fadeInUpBig"
         >
         <StyleButton  type="primary"
-         content={"Login"}
+         content={"Get Started"}
          onPress ={() => { 
            console.warn("Custom order is pressed")
            navigation.navigate('login')
