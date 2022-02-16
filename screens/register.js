@@ -1,10 +1,17 @@
 import React from 'react'
-import { SafeAreaView, StyleSheet, Text,TouchableOpacity, View ,TextInput,} from 'react-native'
+import { SafeAreaView, StyleSheet, Text,TouchableOpacity, View ,TextInput,ScrollView} from 'react-native'
 import { Avatar, BottomNavigation, } from 'react-native-paper'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Feather from 'react-native-vector-icons/Feather'
 import StyleButton from '../components/StyleButton';
 import * as Animatable from 'react-native-animatable';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Foundation } from '@expo/vector-icons';
+import GenderPicker from '../components/StyleButton/picker'
+
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import authentication from '../components/firebase'
+//import { MaterialCommunityIcons } from '@expo/vector-icons';
 //import { Icon } from 'react-native-vector-icons/MaterialCommunityIcons'
 // import BottomSheet from 'reanimated-bottom-sheet';
 // import Animated from 'react-native-reanimated'
@@ -15,28 +22,22 @@ import * as Animatable from 'react-native-animatable';
 
 const Register = ({navigation}) => {
 
-    // bs=React.createRef();
-    // fall= new Animated.Value(1);
-
-    // const renderInner=() =>(
-        
-    //     <Text>helooo g</Text>
-    // );``
-    
-    // const renderHeader=() =>(
-
-    //     <View style={styles.header1}>   
-    //        <View style={styles.panelHeader}>
-    //        <View style={styles.panelHandle}></View>
-    //     </View>
-    //     </View>
-       
-    // );
-
+   const RegisterUser =() =>{
+       createUserWithEmailAndPassword(authentication,data.email,data.password)
+       .then((re)=>{
+           console.log(re);
+           navigation.navigate('login')
+       })
+       .catch((re)=>{
+           console.warn(re);
+       })
+   }
     const [data,setData]= React.useState({
         email:'',
         password:'',
+        name:'',
         check_textInputChange: false,
+        check_textInputNameChange: false,
         secureTextEntry:true
     });
     const textInputChange=(val)=>{
@@ -55,12 +56,29 @@ const Register = ({navigation}) => {
             })
         }
     }
+    const textInputNameChange=(val)=>{
+        if(val.length !== 0){
+            setData({
+                ...data,
+                name:val,
+                check_textInputNameChange:true
+            })
+        }
+        else{
+            setData({
+                ...data,
+                name:val,
+                check_textInputNameChange:false
+            })
+        }
+    }
 
     const handlePasswordChange=(val)=>{
         setData({
             ...data,
-            password:val
-        }) 
+            password:val,
+            
+        })
     }
     const updateSecureTextEntry =() =>{
         setData({
@@ -74,8 +92,9 @@ const Register = ({navigation}) => {
          <View style={styles.header}>
          <Text style={styles.text_header}>Register Yourself</Text>
          </View>
-          
-          {/* <BottomSheet 
+       
+
+          {/* <BottomSheet
               ref={this.bs}
               snapPoints={330,0}
               renderContent={this.renderInner}
@@ -84,55 +103,60 @@ const Register = ({navigation}) => {
               callbackNode={this.fall}
               enabledGestureInteraction={true}
           /> */}
-         <Animatable.View 
-            animation="fadeInUpBig"   
+         <Animatable.View
+            animation="fadeInUpBig"
              style={styles.footer}>
-        <TouchableOpacity 
-      //  onPress={()=>this.bs.current.snapTo(0)}
+        <TouchableOpacity
+     
         >
           <View style={{flexDirection:'column', marginTop:5,alignItems:'center'}}>
-              <Avatar.Image 
+              <Avatar.Image
                   source={require('./../assets/_92A2045.jpeg')}
                   size={80}
               />
-              {/* <View style={{
-                  flex:1,
-                  justifyContent:'center',
-                  alignItems:'center',
-              }}>
-              <Icon name="camera" size={35} color="#fff"
-              style={{
-                  opacity:0.7,
-                  alignItems:'center',
-                  justifyContent:'center',
-                  borderWidth:1,
-                  borderColor:"#ffff",
-                  borderRadius:10
-              }} 
-
-              />
-
-              </View>
-              */}
+           
 
           </View>
           </TouchableOpacity>
-             <Text style={styles.text_footer}>Email</Text>
+
+             <Text style={styles.text_footer}>Full Name</Text>
              <View style={styles.action}>
-                 <FontAwesome 
+                  <FontAwesome
                  name="user-o"
                  color="#05375a"
                  size={20}
+                /> 
+               
+                <TextInput
+                    placeholder='Your Full name'
+                    style={styles.textInput}
+                    autoCapitalize='none'
+                    onChangeText={(val) =>textInputNameChange(val)}
                 />
-                <TextInput 
+                {data.check_textInputNameChange ?
+                <Animatable.View  animation="bounceIn">
+                <Feather
+                    name='check-circle'
+                    color="green"
+                    size={20}
+                />
+                </Animatable.View>
+                : null}
+             </View>
+
+             <Text style={styles.text_footer}>Email</Text>
+             <View style={styles.action}>
+             <MaterialIcons name="email" size={20} color="#05375a" />
+                <TextInput
                     placeholder='Your Email address'
                     style={styles.textInput}
+                     value={data.email}
                     autoCapitalize='none'
                     onChangeText={(val) =>textInputChange(val)}
                 />
                 {data.check_textInputChange ?
                 <Animatable.View  animation="bounceIn">
-                <Feather 
+                <Feather
                     name='check-circle'
                     color="green"
                     size={20}
@@ -144,28 +168,29 @@ const Register = ({navigation}) => {
              <Text style={[styles.text_footer,
             { marginTop:20}]}>Password</Text>
              <View style={styles.action}>
-                 <FontAwesome 
+                 <FontAwesome
                  name="lock"
-                 color="#05375a" 
-                 size={20} 
+                 color="#05375a"
+                 size={20}
                 />
-                <TextInput 
+                <TextInput
                     placeholder='Your Password'
+                    value={data.password}
                     secureTextEntry={data.secureTextEntry? true:false}
                     style={styles.textInput}
                     autoCapitalize='none'
                     onChangeText={(val) =>handlePasswordChange(val)}
                 />
-                <TouchableOpacity 
+                <TouchableOpacity
                 onPress={updateSecureTextEntry}
                 >
                 {data.secureTextEntry ?
-                <Feather 
+                <Feather
                     name='eye-off'
                     color="grey"
                     size={20}
                 /> :
-                <Feather 
+                <Feather
                     name='eye'
                     color="grey"
                     size={20}
@@ -176,28 +201,29 @@ const Register = ({navigation}) => {
              <Text style={[styles.text_footer,
             { marginTop:20}]}> Confirm Password</Text>
              <View style={styles.action}>
-                 <FontAwesome 
+                 <FontAwesome
                  name="lock"
-                 color="#05375a" 
-                 size={20} 
+                 color="#05375a"
+                 size={20}
                 />
-                <TextInput 
+                <TextInput
                     placeholder=' Confirm Your Password'
                     secureTextEntry={data.secureTextEntry? true:false}
                     style={styles.textInput}
                     autoCapitalize='none'
+                    keyboardType='email-address'
                     onChangeText={(val) =>handlePasswordChange(val)}
                 />
-                <TouchableOpacity 
+                <TouchableOpacity
                 onPress={updateSecureTextEntry}
                 >
                 {data.secureTextEntry ?
-                <Feather 
+                <Feather
                     name='eye-off'
                     color="grey"
                     size={20}
                 /> :
-                <Feather 
+                <Feather
                     name='eye'
                     color="grey"
                     size={20}
@@ -205,34 +231,49 @@ const Register = ({navigation}) => {
                 }
                 </TouchableOpacity>
              </View>
-             <View style={styles.button}>
-                 <StyleButton
-                     type="primary"
-                     content={"Login"}
-                     onPress ={() => { 
-                     console.warn("Login  is pressed")
-                     navigation.navigate('login')
-                     }}
-                 />
+             <Text style={styles.text_footer}>Contact Number</Text>
+             <View style={styles.action}>
+             <Foundation name="telephone" size={20} color="#05375a" />
+                <TextInput
+                    placeholder='Your Contact Number'
+                    style={styles.textInput}
+                    autoCapitalize='none'
+                    
+                />
+               
+             </View>
+             <Text style={styles.text_footer}>Gender</Text>
+             <View style={styles.action, {flexDirection:'row'}}>
+             {/* <MaterialCommunityIcons name="gender-male-female-variant" size={30} color="#05375a" />
+             */}
 
+               <GenderPicker/>
+             </View>
+
+            
+ 
+             <View style={styles.button}>
                  <StyleButton type="primary"
-                    content={"SignUp"}
-                    onPress ={() => { 
-                    console.warn("Register  is pressed")
-                    navigation.navigate('Register')
-                     }}/>
+                    content={"Sign Up"}
+                //     onPress ={() => {
+                //     console.warn(data.email,data.password),
+                //  //   navigation.navigate('login')
+                //  {RegisterUser}
+                //      }}
+                onPress={RegisterUser}
+
+                     />
              </View>
 
          </Animatable.View>
-      
-       </SafeAreaView>
+              </SafeAreaView>
     )
 }
 
 export default Register
 
 const styles = StyleSheet.create({
-   
+
     container:{
         flex:1,
        backgroundColor:"#4E4DEB",
@@ -261,6 +302,7 @@ const styles = StyleSheet.create({
          fontSize:30,
      },
      text_footer:{
+         marginTop:10,
        color:'#05375a',
        fontSize:18,
      },
@@ -312,5 +354,5 @@ const styles = StyleSheet.create({
           borderTopLeftRadius:20,
           borderTopRightRadius:20,
       }
- 
+
 })

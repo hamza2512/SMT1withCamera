@@ -5,7 +5,8 @@ import * as Animatable from 'react-native-animatable';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Feather from 'react-native-vector-icons/Feather'
 import StyleButton from '../components/StyleButton';
-
+import { authentication } from '../components/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 const login = ({navigation}) => {
      
     const [data,setData]= React.useState({
@@ -14,6 +15,16 @@ const login = ({navigation}) => {
         check_textInputChange: false,
         secureTextEntry:true
     });
+
+    const SignInUser =()=>{
+        signInWithEmailAndPassword(authentication,data.email,data.password)
+        .then((re)=>{
+            navigation.navigate('Home2')
+        })
+        .catch((re)=>{
+            console.warn(re);
+        })
+    }
     const textInputChange=(val)=>{
         if(val.length !== 0){
             setData({
